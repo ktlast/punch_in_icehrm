@@ -1,21 +1,6 @@
 # punch_in_icehrm
 Automatically punch-in and -out on IceHRM
 
-### A) Steps:
-
-1. scp punch.zip 到測試機，可以放在 /home/<you>/ 底下；自行決定
-2. unzip punch.zip
-3. 用 root 執行 setup.sh (權限如果不足再自行 chmod)
-4. 等待安裝，可能需要五分鐘左右
-5. follow 安裝完成的提示；如果有其他錯誤訊息再排除
-
----
-
-### B) yaml 詳細說明:
-
-# punch_in_icehrm
-Automatically punch-in and -out on IceHRM
-
 
 ### A) Steps:
 
