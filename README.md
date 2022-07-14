@@ -1,14 +1,13 @@
 # punch_in_icehrm
-Automatically punch-in and -out on IceHRM
+Automatically `punch-in` and `punch-out` on IceHRM based on Selenium
 
 
 ### A) Steps:
 
-1. scp punch.zip 到測試機，可以放在 /home/<you>/ 底下；自行決定
-2. unzip punch.zip
-3. 用 root 執行 setup.sh (權限如果不足再自行 chmod)
-4. 等待安裝，可能需要五分鐘左右
-5. follow 安裝完成的提示；如果有其他錯誤訊息再排除
+1. 打包本檔到打卡 server (`scp`)，可以放在 `/home/<you>/` 底下；自行決定
+2. 用 root 執行 setup.sh (權限如果不足再自行 chmod)
+3. 等待安裝，可能需要五分鐘左右 (安裝 python3 `./configure` 跟 `./make` 最花時間)
+4. follow 安裝完成的提示；如果有其他錯誤訊息再排除
 
 ---
 
