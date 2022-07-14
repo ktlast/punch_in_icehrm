@@ -1,0 +1,28 @@
+users:
+  ktlast@example.com:
+    alias: ktlast
+    delay-seconds:
+      basic: 100
+      random-start: 0
+      random-end: 100
+    user-agent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36"
+    slack:
+      verbose: 1
+      hookurl: "https://hooks.slack.com/services/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    password: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    leave:
+      -
+
+global:
+  enabled: True
+  system:
+    driver-path: "/Path/to/chromedriver"
+    hrm-url: "https://<HRM_URL>/app/?g=modules&n=attendance&m=modules_Attendance"
+  holidays:
+    - 2022-02-28
+    - 2022-04-04
+    - 2022-04-05
+    - 2022-05-02
+    - 2022-06-03
+    - 2022-09-09
+    - 2022-10-10
