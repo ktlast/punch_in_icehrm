@@ -11,8 +11,8 @@ EXAMPLE_CONFIG="example.yaml"
 
 # prepare env dir
 mkdir auto-punch
-HOME_DIR="$PWD/auto-punch"
-cd $HOME_DIR
+WORK_DIR="$PWD/auto-punch"
+cd $WORK_DIR
 
 
 highlight_printf_n () {
@@ -20,44 +20,41 @@ highlight_printf_n () {
 }
 
 
-install_chrome () {
+install_chrome_and_driver () {
+  # install chrome
   TARGET_CHROME_VERSION="latest"
   # TARGET_CHROME_VERSION="99.0.4844.51"
   
-  highlight_printf_n "Installing [chrome.rpm] .. \n"
+  highlight_printf_n "Installing [chrome.rpm] @ version: [${TARGET_CHROME_VERSION}] .. \n"
   CHROME_VERSION=$(rpm -qa |grep google-chrome-stable |cut -d '-'  -f 4)
-  if [[ -z $CHROME_VERSION ]]; then
+  if [[ -z ${CHROME_VERSION} ]]; then
     yum install -y https://dl.google.com/linux/chrome/rpm/stable/x86_64/google-chrome-stable-${TARGET_CHROME_VERSION}-1.x86_64.rpm
-    CHROME_VERSION=$(rpm -qa |grep google-chrome-stable |cut -d '-'  -f 4)
-    [[ -z $CHROME_VERSION ]] && echo "[x] [google-chrome-stable] not found in [rpm -qa]; exit 1 " && exit 1
+    FINAL_CHROME_VERSION=$(rpm -qa |grep google-chrome-stable |cut -d '-'  -f 4)
+    [[ -z ${CHROME_VERSION} ]] && echo "[x] [google-chrome-stable] not found in [rpm -qa]; exit 1 " && exit 1
   fi
-}
 
-
-install_chrome_driver () {
+  # install driver
   cd "/opt"
-  highlight_printf_n "Installing [unzip] .. \n"
-  yum -y -q install unzip
-  highlight_printf_n "Downloading [chrome driver] under [/opt] .. \n"
-  
-  CHROME_DRIVER_URL="https://chromedriver.storage.googleapis.com/$CHROME_VERSION/chromedriver_linux64.zip"
-  wget -q --spider $CHROME_DRIVER_URL
-  [[ $? != "0" ]] && echo "[x] [$CHROME_DRIVER_URL] not working in; exit 1 " && exit 1
+  highlight_printf_n "Downloading [chrome driver] @ version: [${FINAL_CHROME_VERSION}]  under [/opt] .. \n"
+  CHROME_DRIVER_URL="https://chromedriver.storage.googleapis.com/${FINAL_CHROME_VERSION}/chromedriver_linux64.zip"
+  [[ ! $(wget -q --spider $CHROME_DRIVER_URL) ]] && echo "[x] [$CHROME_DRIVER_URL] not working in; exit 1 " && exit 1
   wget $CHROME_DRIVER_URL
   unzip "chromedriver_linux64.zip"
-  cd $HOME_DIR
+  cd $WORK_DIR
 }
 
 
 yum_install_packages () {
   highlight_printf_n "Going to install a bunch of packages, may take a while.. \n"
-  highlight_printf_n "(0/3) ... \n"
+  highlight_printf_n "(0/4) ... \n"
+  yum -y -q install wget unzip vim deltarpm 
+  highlight_printf_n "(1/4) ... \n"
   yum -y -q install make gcc gcc-c++
-  highlight_printf_n "(1/3) ... \n"
+  highlight_printf_n "(2/4) ... \n"
   yum -y -q group install "Development Tools"
-  highlight_printf_n "(2/3) ... \n"
+  highlight_printf_n "(3/4) ... \n"
   yum -y -q install zlib-devel  readline* libffi-devel openssl-devel tk-devel sqlite-devel
-  highlight_printf_n "(3/3) ... \n"
+  highlight_printf_n "(4/4) ... \n"
 }
 
 
@@ -76,7 +73,7 @@ install_python_37 () {
     echo
     highlight_printf_n "Make Install .. \n" && sleep 1
     make install > /dev/null
-    cd $HOME_DIR
+    cd $WORK_DIR
     sleep 1
   fi
 }
@@ -93,7 +90,7 @@ pip3_install_packages () {
 
 
 clean_files () {
-  cd $HOME_DIR
+  cd $WORK_DIR
   mkdir -p ./archived
   [[ -f "Python-3.7.12.tgz" ]] && mv "Python-3.7.12.tgz" ./archived
   [[ -f "google-chrome-stable_current_x86_64.rpm" ]] && mv "google-chrome-stable_current_x86_64.rpm" ./archived
@@ -106,8 +103,8 @@ clean_files () {
   [[ ! -f $MAIN_CONFIG ]] && cp ./$EXAMPLE_CONFIG ./$MAIN_CONFIG
 
   chmod a+x ./$MAIN_SCRIPT
-  highlight_printf_n "Change owner to [$SUDO_USER] for all subpathes under [$HOME_DIR]"
-  chown -R $SUDO_USER:$SUDO_USER $HOME_DIR
+  highlight_printf_n "Change owner to [$SUDO_USER] for all subpathes under [$WORK_DIR]"
+  chown -R $SUDO_USER:$SUDO_USER $WORK_DIR
 
   # danger zone
   rm -f "/opt/chromedriver_linux64.zip"
@@ -125,10 +122,10 @@ final_hints () {
   printf "  2. Go [${YELLOW}https://api.slack.com/]${NC} to register webhook to send DM to your channel\n"
   printf "  3. Go ${CYAN}Google${NC} [${YELLOW}my user agent${NC}] and paste result into [${GREEN}$MAIN_CONFIG${NC}] \n"
   printf "  4. Go Paste [${YELLOW}<YOUR PASSWORD>${NC}] and check [global.system.hrm-url] in [${GREEN}$MAIN_CONFIG${NC}] \n"
-  printf "  5. Test Script in by command [${YELLOW}/usr/local/bin/python3 $HOME_DIR/$MAIN_SCRIPT -f $HOME_DIR/$MAIN_CONFIG] ${NC}\n"
+  printf "  5. Test Script in by command [${YELLOW}/usr/local/bin/python3 $WORK_DIR/$MAIN_SCRIPT -f $WORK_DIR/$MAIN_CONFIG] ${NC}\n"
   printf "  6. Setup crontab [${YELLOW}crontab -e${NC}] e.g.\n"
-  printf "      ${YELLOW} 55 8 * * 1-5 /usr/local/bin/python3 $HOME_DIR/$MAIN_SCRIPT -f $HOME_DIR/$MAIN_CONFIG  ${NC} \n"
-  printf "      ${YELLOW} 50 17 * * 1-5 /usr/local/bin/python3 $HOME_DIR/$MAIN_SCRIPT -f $HOME_DIR/$MAIN_CONFIG ${NC} \n"
+  printf "      ${YELLOW} 55 8 * * 1-5 /usr/local/bin/python3 $WORK_DIR/$MAIN_SCRIPT -f $WORK_DIR/$MAIN_CONFIG  ${NC} \n"
+  printf "      ${YELLOW} 50 17 * * 1-5 /usr/local/bin/python3 $WORK_DIR/$MAIN_SCRIPT -f $WORK_DIR/$MAIN_CONFIG ${NC} \n"
   echo
   echo
   printf "${L_BLUE}* Note: ${NC} \n"
@@ -140,9 +137,8 @@ final_hints () {
 
 
 # main
-install_chrome
-install_chrome_driver
 yum_install_packages
+install_chrome_and_driver
 install_python_37
 pip3_install_packages
 clean_files
