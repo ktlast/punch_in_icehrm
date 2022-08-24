@@ -21,11 +21,13 @@ highlight_printf_n () {
 
 
 install_chrome () {
+  TARGET_CHROME_VERSION="latest"
+  # TARGET_CHROME_VERSION="99.0.4844.51"
+  
   highlight_printf_n "Installing [chrome.rpm] .. \n"
   CHROME_VERSION=$(rpm -qa |grep google-chrome-stable |cut -d '-'  -f 4)
   if [[ -z $CHROME_VERSION ]]; then
-    wget "https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm"
-    yum -y -q install ./google-chrome-stable_current_x86_64.rpm
+    yum install -y https://dl.google.com/linux/chrome/rpm/stable/x86_64/google-chrome-stable-${TARGET_CHROME_VERSION}-1.x86_64.rpm
     CHROME_VERSION=$(rpm -qa |grep google-chrome-stable |cut -d '-'  -f 4)
     [[ -z $CHROME_VERSION ]] && echo "[x] [google-chrome-stable] not found in [rpm -qa]; exit 1 " && exit 1
   fi
@@ -37,6 +39,7 @@ install_chrome_driver () {
   highlight_printf_n "Installing [unzip] .. \n"
   yum -y -q install unzip
   highlight_printf_n "Downloading [chrome driver] under [/opt] .. \n"
+  
   CHROME_DRIVER_URL="https://chromedriver.storage.googleapis.com/$CHROME_VERSION/chromedriver_linux64.zip"
   wget -q --spider $CHROME_DRIVER_URL
   [[ $? != "0" ]] && echo "[x] [$CHROME_DRIVER_URL] not working in; exit 1 " && exit 1
