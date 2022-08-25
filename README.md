@@ -1,6 +1,8 @@
 # punch_in_icehrm
 Automatically `punch-in` and `punch-out` on IceHRM based on Selenium
 
+### 注意事項：
+- 如果 IceHRM 有開放 API 就直接用 API；這支是用來處理**沒開放 API** 時的自動打卡。
 
 ### A) Steps:
 

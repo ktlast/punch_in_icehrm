@@ -151,9 +151,10 @@ class PunchWorker:
         chrome_options.add_argument('--headless')
         chrome_options.add_argument('--disable-gpu')
         chrome_options.add_argument('log-level=1')
+        chrome_options.add_argument('--disable-dev-shm-usage')
         chrome_options.add_argument(f"user-agent={config['users'][self.email_address]['user-agent']}")
         self.driver = webdriver.Chrome(service=s, options=chrome_options)
-        self.driver.set_page_load_timeout(10)  # wait page load up to 10 seconds.
+        self.driver.set_page_load_timeout(15)  # wait page load up to 15 seconds.
 
     def login(self):
         basic = int(self.user_config['delay-seconds']['basic'])
