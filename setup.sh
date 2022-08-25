@@ -44,7 +44,7 @@ install_chrome_and_driver () {
   if [[ -z ${CHROME_VERSION} ]]; then
     yum install -y -q https://dl.google.com/linux/chrome/rpm/stable/x86_64/google-chrome-stable-${TARGET_CHROME_VERSION}-1.x86_64.rpm
     FINAL_CHROME_VERSION=$(rpm -qa |grep google-chrome-stable |cut -d '-'  -f 4)
-    [[ -z ${CHROME_VERSION} ]] && echo "[x] [google-chrome-stable] not found in [rpm -qa]; exit 1 " && exit 1
+    [[ -z ${FINAL_CHROME_VERSION} ]] && echo "[x] [google-chrome-stable] not found in [rpm -qa]; exit 1 " && exit 1
   fi
 
   # install driver
