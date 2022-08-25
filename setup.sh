@@ -20,15 +20,29 @@ highlight_printf_n () {
 }
 
 
+yum_install_packages () {
+  highlight_printf_n "Going to install a bunch of packages, may take a while.. \n"
+  highlight_printf_n "(0/4) ... \n"
+  yum -y -q install wget unzip vim deltarpm 
+  highlight_printf_n "(1/4) ... \n"
+  yum -y -q install make gcc gcc-c++
+  highlight_printf_n "(2/4) ... \n"
+  yum -y -q group install "Development Tools"
+  highlight_printf_n "(3/4) ... \n"
+  yum -y -q install zlib-devel  readline* libffi-devel openssl-devel tk-devel sqlite-devel
+  highlight_printf_n "(4/4) ... \n"
+}
+
+
 install_chrome_and_driver () {
   # install chrome
-  TARGET_CHROME_VERSION="latest"
-  # TARGET_CHROME_VERSION="99.0.4844.51"
+  # TARGET_CHROME_VERSION="latest"
+  TARGET_CHROME_VERSION="99.0.4844.51"
   
   highlight_printf_n "Installing [chrome.rpm] @ version: [${TARGET_CHROME_VERSION}] .. \n"
   CHROME_VERSION=$(rpm -qa |grep google-chrome-stable |cut -d '-'  -f 4)
   if [[ -z ${CHROME_VERSION} ]]; then
-    yum install -y https://dl.google.com/linux/chrome/rpm/stable/x86_64/google-chrome-stable-${TARGET_CHROME_VERSION}-1.x86_64.rpm
+    yum install -y -q https://dl.google.com/linux/chrome/rpm/stable/x86_64/google-chrome-stable-${TARGET_CHROME_VERSION}-1.x86_64.rpm
     FINAL_CHROME_VERSION=$(rpm -qa |grep google-chrome-stable |cut -d '-'  -f 4)
     [[ -z ${CHROME_VERSION} ]] && echo "[x] [google-chrome-stable] not found in [rpm -qa]; exit 1 " && exit 1
   fi
@@ -41,20 +55,6 @@ install_chrome_and_driver () {
   wget $CHROME_DRIVER_URL
   unzip "chromedriver_linux64.zip"
   cd $WORK_DIR
-}
-
-
-yum_install_packages () {
-  highlight_printf_n "Going to install a bunch of packages, may take a while.. \n"
-  highlight_printf_n "(0/4) ... \n"
-  yum -y -q install wget unzip vim deltarpm 
-  highlight_printf_n "(1/4) ... \n"
-  yum -y -q install make gcc gcc-c++
-  highlight_printf_n "(2/4) ... \n"
-  yum -y -q group install "Development Tools"
-  highlight_printf_n "(3/4) ... \n"
-  yum -y -q install zlib-devel  readline* libffi-devel openssl-devel tk-devel sqlite-devel
-  highlight_printf_n "(4/4) ... \n"
 }
 
 
