@@ -53,8 +53,11 @@ install_chrome_and_driver () {
   cd "/opt"
   highlight_printf_n "Downloading [chrome driver] @ version: [${FINAL_CHROME_VERSION}]  under [/opt] .. \n"
   CHROME_DRIVER_URL="https://chromedriver.storage.googleapis.com/${FINAL_CHROME_VERSION}/chromedriver_linux64.zip"
-  [[ ! $(wget -q --spider $CHROME_DRIVER_URL) ]] && echo "[x] [$CHROME_DRIVER_URL] not working in; exit 1 " && exit 1
-  wget $CHROME_DRIVER_URL
+  if ! wget -q --spider ${CHROME_DRIVER_URL} 2> /dev/null ; then
+    echo "[x] [${CHROME_DRIVER_URL}] not working in; exit 1 "
+    exit 1
+  fi
+  wget ${CHROME_DRIVER_URL}
   unzip "chromedriver_linux64.zip"
   cd $WORK_DIR
 }
